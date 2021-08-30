@@ -1,4 +1,5 @@
 #Create a file
+
 root@CE-A# run start shell
 
 root@CE-A:# cd /var/run/scripts/op
@@ -16,4 +17,5 @@ root@CE-A# set system scripts op file op-hw.slax
 run request system scripts refresh-from op file op-hw.slax url https://raw.githubusercontent.com/tomaszschwiertz/op-scripts/main/op-hw.slax
 
 #How to run it
+
 root@CE-A# run op op-hw.slax
