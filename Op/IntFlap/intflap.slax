@@ -51,6 +51,22 @@ match / {
                     call jcs:load-configuration($connection=&con, $configuration=$disable-xml);
                     [...]
                 }
+
+                /* Emit results, including errors/warnings. */
+                <output> "Results of commit to disable the interface:";
+                copy-of $disable-results;
+
+                /* Check for errors */
+                if ($disable-results//xnm:error) {
+                    <output> "Script aborted due to errors while disabling the interface.";
+                }
+                else {
+                    /* Print success message. */
+                    expr jcs:output("Interface ", $interface, " disabeled.");
+
+                    /* Sleep 5 seconds */
+                    expr jcs:sleep(5,0);
+                }
             }
         }
     }
