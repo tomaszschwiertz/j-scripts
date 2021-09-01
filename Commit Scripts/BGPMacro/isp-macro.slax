@@ -1,0 +1,72 @@
+version 1.0;
+ns junos = "http://xml.juniper.net/junos/*/junos";
+ns xnm = "http://xml.juniper.net/xnm/1.1/xnm";
+ns jcs = "http://xml.juniper.net/junos/commit-scripts/1.0";
+import "../import/junos.xsl";
+
+match configuration {
+    for-each (interfaces/interface/unit/family/inet/address/apply-macro[name="create-bgp"]) {
+
+    /* We are now at the [edit interfaces <interface> unit <unit> family inet address <address> apply-macro create-bgp] hierarhy */
+
+        if(not(data[name=="asn"]/value && data[name=="customer-id"]/value && data[name=="routes"]/value)) {
+            <xnm:error> {
+                call jcs:edit-path();
+                <message> {
+                    <xsl:text>"Macro 'create-bgp' requires parameters 'asn', 'customer-id', and 'routes'.";
+                }
+            }
+        }
+
+        else {
+        /* Assign the parameters to local variables for clarity */
+        var $asn = data[name=="asn"]/value;
+        var $customer-id = data[name=="customer-id"/value;
+        var $routes = data[name=="routes"]/value;
+
+        var $localaddr=jcs:regex('([0-9]+\.)([0-9]+\.)([0-9]+\.)([0-9]+\.)(\/[0-9]+)', ../name);
+        var $remoteaddr=$localaddr[2] _ $localaddr[3] _ $localaddr[4] _ ($localaddr[5] + 1);
+
+
+        /* Check to make sure each parameter has a non-empty valie */
+
+            if (jcs:empty($asn) || jcs:empty($customer-id) || jcs:empty($routes)) {
+                <xnm:error> {
+                    call jcs:edit-path();
+                     <message> {
+                         <xsl:text>"Macro 'create-bgp"requires non-empty values for parameters 'asn', 'customer-id', and 'routes' ";"
+                  }
+              }
+            }
+
+            else if (not(../../../../../../../protocols/bgp/group[name==$routes])) {
+                <xnm:error> {
+                    call jcs:edit-path();
+                    <message> {
+                        <xls:text>"The 'routes' parameter must refer to a valid BGP group";
+                    }
+                }
+            }
+
+            else {
+                call jcs:emit-change() {
+                    with $dot=../../../../../../../protocols/bgp;
+                    with $content= {
+                        <group> {
+                            <name>&routes;
+                            <neighbor> {
+                                <name>&remoteaddr;
+                                <peer-as>&asn;
+                                <import>$customer-id _ '_' _ $asn;
+                        }
+
+                    }
+                }
+                    with $tag="transient-change";
+                 }
+            }
+
+        }
+
+    }
+}
