@@ -66,7 +66,44 @@ match / {
 
                     /* Sleep 5 seconds */
                     expr jcs:sleep(5,0);
+
+                    /* XML to enable interface */
+                    var = $enable-xml = {
+                        <configuration> {
+                            <interfaces> {
+                                <interface> {
+                                    <name> $interface;
+                                    <disable delete="delete">;
+                                }
+                            }
+                        }
+                    }
+                    /* Notify the user we are enabling the interface. */
+                    expr jcs:output("Enabling interface...");
+
+                    /* Load and commit the confoguration */
+                    var $enable-results := {
+                        call jcs:load-configuration($connection=$con, $configuration=$enable-xml);
+                    }
+
+                    [...]
+                    /* Emit results, including errors/warnings. */
+                    <output> "Results of commit to enable the interface:";
+                    copy-of $enable-results;
+
+                    /* Check for errors. */
+                    if ($enable-results//xnm:error) {
+                        <xnm:error> {
+                            <message> "Error performing commit to enable the interface. Interface still disabeled!";
+                        }
+                    }
+                    else {
+                        /* Print success message. */
+                        expr jcs:output("Interface ", $interface, " enabeled.");
+                    }
                 }
+                /* Close the mgd connection. */
+                expr jcs:close($con);
             }
         }
     }
