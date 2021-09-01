@@ -1,0 +1,57 @@
+version 1.0;
+ns junos = "http://xml.juniper.net/junos/*/junos";
+ns xnm = "http://xml.juniper.net/xnm/1.1/xnm";
+ns jcs = "http://xml.juniper.net/junos/commit-scripts/1.0";
+import "../import/junos.xsl";
+
+/* Define Arguments */
+param $interface;
+
+var $arguments = {
+    <argument> {
+        <name> "interface";
+        <description> "The interface that should be disabeled/re-enabeled.";
+    }
+}
+
+/* Main Script */
+match / {
+    <op-script-results> {
+        /* Error-check inout. */
+        if (jcs:empty($interface)) {
+            <xmn:error> {
+                <message> "Required parameter 'interface' missing.";
+            }
+        }
+        else {
+            /* Open connection to mgd */
+            var $con = jcs:open();
+            if (not($con)) {
+                <xnm:error> {
+                    <message> "Unable to conenct to local mgd.";
+                }
+            }
+            else {
+                /* XML to disable interface */
+                var $disable-xml = {
+                    <configuration> {
+                        <interfaces> {
+                            <interface> {
+                                <name> $interface;
+                                <disable>;
+                            }
+                        }
+                    }
+                }
+                /* Notify the user we are disabling the interface */
+                expr jcs:output("Disabling interface...");
+
+                /* Load and commit the configuration. */
+                var $disable-results := {
+                    call jcs:load-configuration($connection=&con, $configuration=$disable-xml);
+                    [...]
+                }
+            }
+        }
+    }
+}
