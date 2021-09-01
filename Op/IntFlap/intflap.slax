@@ -48,7 +48,7 @@ match / {
 
                 /* Load and commit the configuration. */
                 var $disable-results := {
-                    call jcs:load-configuration($connection=&con, $configuration=$disable-xml);
+                    call jcs:load-configuration($connection=$con, $configuration=$disable-xml);
                 }
 
                 /* Emit results, including errors/warnings. */
