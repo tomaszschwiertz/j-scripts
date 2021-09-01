@@ -19,7 +19,7 @@ match / {
     <op-script-results> {
         /* Error-check inout. */
         if (jcs:empty($interface)) {
-            <xmn:error> {
+            <xnm:error> {
                 <message> "Required parameter 'interface' missing.";
             }
         }
@@ -49,7 +49,6 @@ match / {
                 /* Load and commit the configuration. */
                 var $disable-results := {
                     call jcs:load-configuration($connection=&con, $configuration=$disable-xml);
-                    [...]
                 }
 
                 /* Emit results, including errors/warnings. */
@@ -68,7 +67,7 @@ match / {
                     expr jcs:sleep(5,0);
 
                     /* XML to enable interface */
-                    var = $enable-xml = {
+                    var $enable-xml = {
                         <configuration> {
                             <interfaces> {
                                 <interface> {
@@ -86,7 +85,6 @@ match / {
                         call jcs:load-configuration($connection=$con, $configuration=$enable-xml);
                     }
 
-                    [...]
                     /* Emit results, including errors/warnings. */
                     <output> "Results of commit to enable the interface:";
                     copy-of $enable-results;
