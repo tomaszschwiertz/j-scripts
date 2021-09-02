@@ -34,7 +34,7 @@ match configuration {
                 <xnm:error> {
                     call jcs:edit-path();
                      <message> {
-                         <xls:text>"Macro 'create-bgp"requires non-empty values for parameters 'asn', 'customer-id', and 'routes' ";"
+                         <xsl:text>"Macro 'create-bgp"requires non-empty values for parameters 'asn', 'customer-id', and 'routes' ";"
                   }
               }
             }
@@ -43,7 +43,7 @@ match configuration {
                 <xnm:error> {
                     call jcs:edit-path();
                     <message> {
-                        <xls:text>"The 'routes' parameter must refer to a valid BGP group";
+                        <xsl:text>"The 'routes' parameter must refer to a valid BGP group";
                     }
                 }
             }
