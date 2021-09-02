@@ -21,7 +21,7 @@ match configuration {
         else {
         /* Assign the parameters to local variables for clarity */
         var $asn = data[name=="asn"]/value;
-        var $customer-id = data[name=="customer-id"/value;
+        var $customer-id = data[name=="customer-id"]/value;
         var $routes = data[name=="routes"]/value;
 
         var $localaddr=jcs:regex('([0-9]+\.)([0-9]+\.)([0-9]+\.)([0-9]+\.)(\/[0-9]+)', ../name);
@@ -34,7 +34,7 @@ match configuration {
                 <xnm:error> {
                     call jcs:edit-path();
                      <message> {
-                         <xsl:text>"Macro 'create-bgp"requires non-empty values for parameters 'asn', 'customer-id', and 'routes' ";"
+                         <xls:text>"Macro 'create-bgp"requires non-empty values for parameters 'asn', 'customer-id', and 'routes' ";"
                   }
               }
             }
@@ -53,10 +53,10 @@ match configuration {
                     with $dot=../../../../../../../protocols/bgp;
                     with $content= {
                         <group> {
-                            <name>&routes;
+                            <name>& routes;
                             <neighbor> {
-                                <name>&remoteaddr;
-                                <peer-as>&asn;
+                                <name>& remoteaddr;
+                                <peer-as>& asn;
                                 <import>$customer-id _ '_' _ $asn;
                         }
 
