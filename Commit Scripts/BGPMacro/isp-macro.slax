@@ -54,10 +54,10 @@ match configuration {
                     with $dot=../../../../../../../protocols/bgp;
                     with $content= {
                         <group> {
-                            <name>& routes;
+                            <name> &routes;
                             <neighbor> {
-                                <name>& remoteaddr;
-                                <peer-as>& asn;
+                                <name> &remoteaddr;
+                                <peer-as> &asn;
                                 <import>$customer-id _ '_' _ $asn;
                         }
 
